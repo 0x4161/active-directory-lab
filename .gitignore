@@ -1,0 +1,48 @@
+# Large VM files — use GitHub Releases instead
+*.ova
+*.ovf
+*.vmdk
+*.vhd
+*.vhdx
+*.vmx
+*.iso
+
+# VirtualBox files
+*.vbox
+*.vbox-prev
+
+# Exported VM directories
+vm-export/VMs/
+vm-export/*.ova
+
+# Logs
+*.log
+*.evtx
+dcpromo.log
+
+# Secrets — never commit real credentials
+secrets.txt
+creds.txt
+*.pfx
+*.key
+*.pem
+*.p12
+
+# Windows artifacts
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.vscode/
+*.swp
+*~
+
+# Screenshots — add selectively
+# screenshots/*
+# !screenshots/.gitkeep
