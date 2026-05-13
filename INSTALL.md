@@ -1,7 +1,8 @@
 # Installation Guide
 
 > **Legal Notice:** This lab is for authorized educational use only.
-> All misconfigurations are intentional. Never expose this environment to production networks.
+> All misconfigurations are intentional and exist solely for learning.
+> Never expose this environment to production networks.
 
 ---
 

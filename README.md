@@ -2,13 +2,13 @@
 
 # Active Directory Enumeration & Attacks Lab
 
-**A fully automated, self-contained Active Directory lab for learning CRTP & CRTE attack paths**
+**A fully automated, self-contained Active Directory lab for practicing real-world attack techniques**
 
 ![Windows Server](https://img.shields.io/badge/Windows_Server-2019-blue?style=flat-square&logo=windows)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue?style=flat-square&logo=powershell)
 ![VirtualBox](https://img.shields.io/badge/VirtualBox-7.x-orange?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
-![Lab Type](https://img.shields.io/badge/Lab-CRTP%20%7C%20CRTE-red?style=flat-square)
+![Lab Type](https://img.shields.io/badge/Lab-Active%20Directory-red?style=flat-square)
 
 </div>
 
@@ -25,7 +25,8 @@
 ## Overview
 
 This lab simulates a realistic enterprise Active Directory environment with intentional
-misconfigurations covering the full CRTP and CRTE attack path curriculum.
+misconfigurations covering a wide range of AD attack techniques — from basic enumeration
+to advanced persistence and cross-domain escalation.
 
 **One-command setup. Import VM. Start hacking.**
 
