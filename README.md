@@ -41,28 +41,15 @@ vagrant up
 
 ## Lab Topology
 
-```
-                    FOREST: corp.local
-    ┌─────────────────────────────────────────────────────┐
-    │                                                     │
-    │   DC-01 (corp.local)         DC-02 (dev.corp.local) │
-    │   ┌───────────────┐          ┌───────────────────┐  │
-    │   │ Windows Srv   │◄────────►│ Windows Srv       │  │
-    │   │ Domain Ctrl   │  Child   │ Child Domain DC   │  │
-    │   │ + CA Server   │  Trust   │                   │  │
-    │   │ 192.168.56.10 │          │ 192.168.56.20     │  │
-    │   └───────────────┘          └───────────────────┘  │
-    │                                                     │
-    │   WS-01 (Attacker)                                  │
-    │   ┌───────────────┐                                 │
-    │   │ Windows 10/11 │                                 │
-    │   │ corp\attacker │                                 │
-    │   │ 192.168.56.30 │                                 │
-    │   └───────────────┘                                 │
-    └─────────────────────────────────────────────────────┘
+![Lab Topology](screenshots/lab-banner.png)
 
-    Network : Host-Only (192.168.56.0/24)
-    Internet: NAT (separate adapter)
+```
+DC-01  192.168.56.10  —  corp.local (Forest Root DC + CA)
+DC-02  192.168.56.20  —  dev.corp.local (Child Domain DC)
+WS-01  192.168.56.30  —  Attacker Workstation
+
+Network : Host-Only (192.168.56.0/24)
+Internet: NAT (separate adapter)
 ```
 
 ---
