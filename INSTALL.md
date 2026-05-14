@@ -8,15 +8,71 @@
 
 ## Requirements
 
-- Host machine with **16 GB RAM** (12 GB minimum)
-- **100 GB** free disk space (60 GB per VM x 3)
-- **VirtualBox 7.x** installed
-- Windows Server 2019 ISO (for building from scratch)
-- Windows 10 or 11 ISO (for WS-01)
+| | Vagrant (Recommended) | Manual Build |
+|---|---|---|
+| RAM | 16 GB (12 GB min) | 16 GB (12 GB min) |
+| Disk | 80 GB free | 100 GB free |
+| Software | VirtualBox + Vagrant | VirtualBox + Windows ISOs |
+| Build time | ~45-60 min (automated) | 2-3 hours (manual) |
+| Download | ~12 GB (base boxes) | 0 (you provide ISOs) |
 
 ---
 
-## Option A — Import Pre-built VMs (Fastest)
+## Option A — Vagrant (Recommended)
+
+Vagrant automatically downloads Windows base boxes, builds all 3 VMs, and runs all setup scripts. No manual steps required.
+
+### Step 1: Install Requirements
+
+- [VirtualBox 7.x](https://www.virtualbox.org/wiki/Downloads)
+- [Vagrant](https://developer.hashicorp.com/vagrant/downloads)
+
+### Step 2: Clone and Start
+
+```bash
+git clone https://github.com/0x4161/active-directory-lab.git
+cd active-directory-lab
+
+# Install required Vagrant plugin
+vagrant plugin install vagrant-reload
+
+# Build the entire lab (takes ~45-60 min)
+vagrant up
+```
+
+Vagrant will:
+1. Download `StefanScherer/windows_2019` base box (~7 GB, cached after first use)
+2. Download `gusztavvargadr/windows-10` base box (~5 GB, cached)
+3. Boot DC-01 → promote to `corp.local` → run `Setup-CorpLocal.ps1`
+4. Boot DC-02 → promote to `dev.corp.local` → run `Setup-DevCorpLocal.ps1`
+5. Boot WS-01 → join `corp.local`
+
+### Step 3: Start Hacking
+
+```bash
+# Check all VMs are up
+vagrant status
+
+# Open WS-01 GUI (if not already open)
+vagrant up ws01 --provision=false
+```
+
+Log in as: `corp\attacker.01` / `p@ssw0rd`
+
+### Common Vagrant Commands
+
+```bash
+vagrant up          # Start all VMs
+vagrant halt        # Shutdown all VMs
+vagrant destroy -f  # Delete all VMs
+vagrant status      # Show VM states
+vagrant snapshot save all clean-baseline   # Take snapshot before attacking
+vagrant snapshot restore all clean-baseline # Reset to clean state
+```
+
+---
+
+## Option B — Import Pre-built VMs (if provided)
 
 ### Step 1: Download Split Parts from GitHub Releases
 

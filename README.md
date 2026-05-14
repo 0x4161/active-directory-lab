@@ -79,52 +79,28 @@ to advanced persistence and cross-domain escalation.
 
 ## Quick Start
 
-### Option A — Import Pre-built VMs (Recommended)
+### Option A — Vagrant (Recommended)
 
-> Download split parts from [GitHub Releases](https://github.com/0x4161/active-directory-lab/releases), reassemble, then import.
-
-**Windows (PowerShell):**
-```powershell
-# Reassemble OVA files from split parts
-$files = @("DC01","DC02","attacker")
-foreach ($f in $files) {
-    $parts = Get-ChildItem "$f.ova.part*" | Sort-Object Name
-    $out = [System.IO.File]::OpenWrite("$f.ova")
-    foreach ($p in $parts) { $bytes = [System.IO.File]::ReadAllBytes($p); $out.Write($bytes,0,$bytes.Length) }
-    $out.Close(); Write-Host "[+] $f.ova reassembled"
-}
-
-# Import into VirtualBox
-VBoxManage import DC01.ova --vsys 0 --vmname "AD-Lab-DC01"
-VBoxManage import DC02.ova --vsys 0 --vmname "AD-Lab-DC02"
-VBoxManage import attacker.ova --vsys 0 --vmname "AD-Lab-Attacker"
-```
-
-**macOS / Linux:**
-```bash
-# Reassemble
-cat DC01.ova.part* > DC01.ova
-cat DC02.ova.part* > DC02.ova
-cat attacker.ova.part* > attacker.ova
-
-# Import
-VBoxManage import DC01.ova --vsys 0 --vmname "AD-Lab-DC01"
-VBoxManage import DC02.ova --vsys 0 --vmname "AD-Lab-DC02"
-VBoxManage import attacker.ova --vsys 0 --vmname "AD-Lab-Attacker"
-```
+**One command builds the entire lab automatically.**
 
 ```bash
-# Start the lab
-./scripts/lab-start.sh
+# Requirements: VirtualBox + Vagrant
+git clone https://github.com/0x4161/active-directory-lab.git
+cd active-directory-lab
 
-# Verify everything is working
-./scripts/lab-status.sh
+vagrant plugin install vagrant-reload
+vagrant up
 ```
 
-### Option B — Build From Scratch
+Vagrant downloads Windows base boxes (~12 GB total), provisions all 3 VMs, promotes the DCs, and runs all setup scripts automatically. Takes ~45-60 min on first run.
+
+> See [INSTALL.md](INSTALL.md) for full Vagrant guide.
+
+---
+
+### Option B — Build From Scratch (Manual)
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/0x4161/active-directory-lab.git
 cd active-directory-lab
 ```

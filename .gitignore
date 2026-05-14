@@ -1,3 +1,6 @@
+# Vagrant runtime files
+.vagrant/
+
 # Large VM files — use GitHub Releases instead
 *.ova
 *.ovf
