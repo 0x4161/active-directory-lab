@@ -30,7 +30,26 @@ $SecurePass = ConvertTo-SecureString $AdminPassword -AsPlainText -Force
 $Credential = New-Object System.Management.Automation.PSCredential($AdminUser, $SecurePass)
 
 Write-Host "[*] Joining $DomainName as WS-01..." -ForegroundColor Cyan
-Add-Computer -DomainName $DomainName -Credential $Credential -OUPath "OU=Workstations,DC=corp,DC=local" -Restart
 
-# VM will reboot automatically.
+$joined = $false
+$retry  = 0
+while (-not $joined -and $retry -lt 5) {
+    try {
+        Add-Computer -DomainName $DomainName -Credential $Credential -OUPath "OU=Workstations,DC=corp,DC=local" -Force -ErrorAction Stop
+        $joined = $true
+    } catch {
+        $retry++
+        Write-Host "[-] Attempt $retry/5 failed: $_ — waiting 20s..." -ForegroundColor Yellow
+        Start-Sleep -Seconds 20
+    }
+}
+
+if (-not $joined) {
+    Write-Error "Failed to join $DomainName after 5 attempts. Check DNS and connectivity."
+    exit 1
+}
+
+Write-Host "[+] Successfully joined $DomainName. Rebooting..." -ForegroundColor Green
+shutdown /r /t 5
+
 # After reboot, log in as: corp\attacker.01 / p@ssw0rd

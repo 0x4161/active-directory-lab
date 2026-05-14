@@ -22,21 +22,39 @@ Get-NetAdapter | ForEach-Object {
     Disable-NetAdapterBinding -Name $_.Name -ComponentID ms_tcpip6 -ErrorAction SilentlyContinue
 }
 
-# ── Step 2: Wait for DC-01 to be reachable ──────────────────────────────────
-Write-Host "[*] Waiting for DC-01 to become reachable..." -ForegroundColor Cyan
+# ── Step 2: Wait for DC-01 ping ──────────────────────────────────────────────
+Write-Host "[*] Waiting for DC-01 to be reachable (ping)..." -ForegroundColor Cyan
 $retry = 0
-while ($retry -lt 12) {
+while ($retry -lt 20) {
     if (Test-Connection -ComputerName 192.168.56.10 -Count 1 -Quiet) {
         Write-Host "[+] DC-01 is reachable." -ForegroundColor Green
         break
     }
     $retry++
-    Write-Host "[-] Attempt $retry/12 — waiting 15s..." -ForegroundColor Yellow
+    Write-Host "[-] Ping attempt $retry/20 — waiting 15s..." -ForegroundColor Yellow
     Start-Sleep -Seconds 15
 }
+if ($retry -eq 20) {
+    Write-Error "DC-01 not reachable after 5 minutes. Ensure dc01 is running: vagrant up dc01"
+    exit 1
+}
 
-if ($retry -eq 12) {
-    Write-Error "DC-01 not reachable after 3 minutes. Ensure dc01 is running first: vagrant up dc01"
+# ── Step 2b: Wait for corp.local DNS to be fully operational ─────────────────
+Write-Host "[*] Waiting for corp.local DNS to be ready..." -ForegroundColor Cyan
+$retry = 0
+while ($retry -lt 20) {
+    try {
+        Resolve-DnsName "corp.local" -Server 192.168.56.10 -ErrorAction Stop | Out-Null
+        Write-Host "[+] corp.local DNS is responding." -ForegroundColor Green
+        break
+    } catch {
+        $retry++
+        Write-Host "[-] DNS attempt $retry/20 — waiting 15s..." -ForegroundColor Yellow
+        Start-Sleep -Seconds 15
+    }
+}
+if ($retry -eq 20) {
+    Write-Error "corp.local DNS not responding after 5 minutes."
     exit 1
 }
 

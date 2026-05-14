@@ -37,18 +37,34 @@ if ($retry -eq 12) {
     exit 1
 }
 
-# ── Step 3: Join corp.local ───────────────────────────────────────────────────
+# ── Step 3: Join corp.local (with retry) ─────────────────────────────────────
 $AdminPass = ConvertTo-SecureString "p@ssw0rd" -AsPlainText -Force
 $Cred      = New-Object System.Management.Automation.PSCredential("corp\Administrator", $AdminPass)
 
 Write-Host "[*] Joining corp.local domain..." -ForegroundColor Cyan
 
-Add-Computer `
-    -DomainName "corp.local" `
-    -Credential $Cred `
-    -OUPath     "OU=Workstations,DC=corp,DC=local" `
-    -Force `
-    -ErrorAction Stop
+$joined = $false
+$retry  = 0
+while (-not $joined -and $retry -lt 5) {
+    try {
+        Add-Computer `
+            -DomainName "corp.local" `
+            -Credential $Cred `
+            -OUPath     "OU=Workstations,DC=corp,DC=local" `
+            -Force `
+            -ErrorAction Stop
+        $joined = $true
+    } catch {
+        $retry++
+        Write-Host "[-] Join attempt $retry/5 failed: $_ — waiting 20s..." -ForegroundColor Yellow
+        Start-Sleep -Seconds 20
+    }
+}
+
+if (-not $joined) {
+    Write-Error "Failed to join corp.local after 5 attempts."
+    exit 1
+}
 
 Write-Host "[+] WS-01 joined corp.local. Vagrant will now reboot..." -ForegroundColor Green
 Write-Host "[*] After reboot, log in as: corp\attacker.01 / p@ssw0rd" -ForegroundColor Cyan
