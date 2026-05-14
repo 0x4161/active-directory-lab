@@ -127,17 +127,16 @@ VBoxManage import attacker.ova --vsys 0 --vmname "AD-Lab-Attacker"
 # 1. Clone the repository
 git clone https://github.com/0x4161/active-directory-lab.git
 cd active-directory-lab
-
-# 2. Read the setup guide
-cat docs/LAB-SETUP.md
-
-# 3. Install Windows Server on 2 VMs + Windows 10 on 1 VM
-
-# 4. Follow promotion steps
-cat setup/promote-dc01.ps1
-cat setup/promote-dc02.ps1
-cat setup/join-ws01.ps1
 ```
+
+1. Create Host-Only network `vboxnet0` (`192.168.56.1`) in VirtualBox — DHCP disabled
+2. Create 3 VMs: each with **Adapter 1: Host-Only** + **Adapter 2: NAT**
+3. Install Windows Server 2019 on DC-01 and DC-02, Windows 10/11 on WS-01
+4. **DC-01** → static IP `192.168.56.10` → run `setup/promote-dc01.ps1` → run `scripts/Setup-CorpLocal.ps1`
+5. **DC-02** → static IP `192.168.56.20`, DNS `192.168.56.10` → run `setup/promote-dc02.ps1` → run `scripts/Setup-DevCorpLocal.ps1`
+6. **WS-01** → static IP `192.168.56.30`, DNS `192.168.56.10` → run `setup/join-ws01.ps1`
+
+> Full guide: [docs/LAB-SETUP.md](docs/LAB-SETUP.md) — Network config: [docs/NETWORK-SETUP.md](docs/NETWORK-SETUP.md)
 
 ---
 

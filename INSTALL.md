@@ -92,20 +92,24 @@ Log in as `corp\attacker.01` / `p@ssw0rd` and begin.
 
 ## Option B — Build From Scratch
 
-See [docs/LAB-SETUP.md](docs/LAB-SETUP.md) for the full manual setup guide.
+See [docs/LAB-SETUP.md](docs/LAB-SETUP.md) for the full step-by-step guide.
+
+> All promotion and setup scripts must be run in **Administrator PowerShell** on each VM.
 
 ### Summary of steps:
 
-1. Create 3 VMs in VirtualBox (specs in README)
-2. Install Windows Server 2019 on DC-01 and DC-02
-3. Install Windows 10/11 on WS-01
-4. Configure static IPs and Host-Only networking
-5. Run `setup/promote-dc01.ps1` on DC-01
-6. Run `scripts/Setup-CorpLocal.ps1` on DC-01
-7. Configure DC-02 DNS to point at DC-01 (192.168.56.10)
-8. Run `setup/promote-dc02.ps1` on DC-02
-9. Run `scripts/Setup-DevCorpLocal.ps1` on DC-02
-10. Run `setup/join-ws01.ps1` on WS-01
+1. **VirtualBox:** Create Host-Only network `vboxnet0` at `192.168.56.1` (DHCP disabled)
+2. Create 3 VMs — each with **Adapter 1: Host-Only (vboxnet0)** and **Adapter 2: NAT**
+3. Install **Windows Server 2019** on DC-01 and DC-02
+4. Install **Windows 10/11** on WS-01
+5. **DC-01:** Set static IP `192.168.56.10`, run `setup/promote-dc01.ps1`
+6. **DC-01:** Run `scripts/Setup-CorpLocal.ps1` (creates all users, groups, ACLs, ADCS)
+7. **DC-02:** Set static IP `192.168.56.20`, DNS → `192.168.56.10`, run `setup/promote-dc02.ps1`
+8. **DC-02:** Run `scripts/Setup-DevCorpLocal.ps1`
+9. **WS-01:** Set static IP `192.168.56.30`, DNS → `192.168.56.10`, run `setup/join-ws01.ps1`
+10. Log in as `corp\attacker.01` / `p@ssw0rd` and begin
+
+> See [docs/NETWORK-SETUP.md](docs/NETWORK-SETUP.md) for static IP commands and [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues.
 
 ---
 

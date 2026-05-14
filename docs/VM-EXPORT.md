@@ -161,9 +161,9 @@ git commit -m "Configure Git LFS for VM files"
 
 ```bash
 # Import with custom name
-VBoxManage import DC-01.ova --vsys 0 --vmname "AD-Lab-DC01"
-VBoxManage import DC-02.ova --vsys 0 --vmname "AD-Lab-DC02"
-VBoxManage import WS-01.ova --vsys 0 --vmname "AD-Lab-WS01"
+VBoxManage import DC01.ova --vsys 0 --vmname "AD-Lab-DC01"
+VBoxManage import DC02.ova --vsys 0 --vmname "AD-Lab-DC02"
+VBoxManage import attacker.ova --vsys 0 --vmname "AD-Lab-Attacker"
 
 # Start all VMs
 ./scripts/lab-start.sh
@@ -182,7 +182,9 @@ To use with VMware Workstation:
 
 ```bash
 # Convert OVA to VMX (VMware format)
-ovftool DC-01.ova DC-01-vmware/DC-01.vmx
+ovftool DC01.ova DC01-vmware/DC01.vmx
+ovftool DC02.ova DC02-vmware/DC02.vmx
+ovftool attacker.ova attacker-vmware/attacker.vmx
 ```
 
 Or import the OVA directly in VMware Workstation via File > Open.
