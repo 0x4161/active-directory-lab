@@ -141,34 +141,44 @@ cd active-directory-lab
 
 ## Attack Scenarios Included
 
-| # | Attack                              | Difficulty | Path                          |
-|---|-------------------------------------|------------|-------------------------------|
-| 1 | Domain Enumeration                  | Easy       | BloodHound / PowerView        |
-| 2 | Kerberoasting                       | Easy       | 6 service accounts            |
-| 3 | AS-REP Roasting                     | Easy       | 3 users                       |
-| 4 | Password Spray                      | Easy       | Weak passwords                |
-| 5 | Credentials in AD Attributes        | Easy       | LDAP enumeration              |
-| 6 | GPP / SYSVOL Password               | Easy       | Groups.xml                    |
-| 7 | ACL — GenericAll                    | Medium     | noura.ahmed -> faisal.omar    |
-| 8 | ACL — WriteDACL                     | Medium     | ahmad.ali -> Finance Users    |
-| 9 | ACL — ForceChangePassword           | Medium     | fahad.salem -> faisal.omar    |
-| 10| ACL — DCSync Rights                 | Medium     | svc_backup -> domain          |
-| 11| ACL — WriteOwner                    | Medium     | Helpdesk -> IT Admins         |
-| 12| Shadow Credentials                  | Medium     | omar.coder -> WEB-SRV-01      |
-| 13| Unconstrained Delegation            | Medium     | WEB-SRV-01 / svc_web          |
-| 14| Constrained Delegation (KCD)        | Hard       | svc_iis -> CIFS/DC-01         |
-| 15| Resource-Based Constrained (RBCD)   | Hard       | tariq.dev -> WEB-SRV-02       |
-| 16| AdminSDHolder Persistence           | Hard       | svc_backup -> all DAs         |
-| 17| DSRM Abuse                          | Hard       | Local admin on DC             |
-| 18| ADCS ESC1                           | Hard       | Forge admin certificate       |
-| 19| ADCS ESC4                           | Hard       | Modify writable template      |
-| 20| ADCS ESC6                           | Hard       | SAN in any template           |
-| 21| ADCS ESC7                           | Hard       | CA Manager abuse              |
-| 22| ADCS ESC8                           | Hard       | NTLM relay to ADCS            |
-| 23| Golden Ticket                       | Expert     | After krbtgt dump             |
-| 24| Child-to-Parent (ExtraSids)         | Expert     | dev -> corp.local EA          |
-| 25| Trust Ticket                        | Expert     | Inter-realm TGT forgery       |
-| 26| SID History Abuse                   | Expert     | dev.backdoor -> EA rights     |
+| #  | Attack                              | Difficulty | Path                              |
+|----|-------------------------------------|------------|-----------------------------------|
+| 1  | Domain Enumeration                  | Easy       | BloodHound / PowerView            |
+| 2  | Kerberoasting                       | Easy       | 6 service accounts                |
+| 3  | AS-REP Roasting                     | Easy       | 4 users (incl. hessa.jaber)       |
+| 4  | Password Spray                      | Easy       | Weak passwords                    |
+| 5  | Credentials in AD Attributes        | Easy       | LDAP enumeration                  |
+| 6  | GPP / SYSVOL Password               | Easy       | Groups.xml                        |
+| 7  | WDigest — Cleartext Creds           | Easy       | Mimikatz sekurlsa::wdigest        |
+| 8  | Pass-the-Hash                       | Easy       | LocalAccountTokenFilterPolicy=1   |
+| 9  | ACL — GenericAll                    | Medium     | noura.ahmed -> faisal.omar        |
+| 10 | ACL — WriteDACL                     | Medium     | ahmad.ali -> Finance Users        |
+| 11 | ACL — ForceChangePassword           | Medium     | fahad.salem -> faisal.omar        |
+| 12 | ACL — DCSync Rights                 | Medium     | svc_backup -> domain              |
+| 13 | ACL — WriteOwner                    | Medium     | Helpdesk -> IT Admins             |
+| 14 | ACL — WriteSPN (Targeted Kerberoast)| Medium     | maryam.hassan -> reem.sultan      |
+| 15 | Shadow Credentials                  | Medium     | omar.coder -> WEB-SRV-01          |
+| 16 | Unconstrained Delegation            | Medium     | WEB-SRV-01 / svc_web              |
+| 17 | PrinterBug / PetitPotam Coercion    | Medium     | Coerce DC-01 auth -> relay/capture|
+| 18 | DnsAdmins DLL Injection             | Medium     | khalid.nasser -> SYSTEM on DC-01  |
+| 19 | Backup Operators — NTDS Dump        | Medium     | dana.rashid -> all domain hashes  |
+| 20 | Account Operators — Account Abuse   | Medium     | nasser.web -> create/modify users |
+| 21 | Silver Ticket                       | Hard       | svc_sql hash -> forge TGS         |
+| 22 | Skeleton Key                        | Hard       | RunAsPPL=0 -> misc::skeleton      |
+| 23 | Constrained Delegation (KCD)        | Hard       | svc_iis -> CIFS/DC-01             |
+| 24 | Resource-Based Constrained (RBCD)   | Hard       | tariq.dev -> WEB-SRV-02           |
+| 25 | DCSync (2nd path)                   | Hard       | noura.ahmed -> Replication rights |
+| 26 | AdminSDHolder Persistence           | Hard       | svc_backup -> all DAs             |
+| 27 | DSRM Abuse                          | Hard       | Local admin on DC                 |
+| 28 | ADCS ESC1                           | Hard       | Forge admin certificate           |
+| 29 | ADCS ESC4                           | Hard       | Modify writable template          |
+| 30 | ADCS ESC6                           | Hard       | SAN in any template               |
+| 31 | ADCS ESC7                           | Hard       | CA Manager abuse                  |
+| 32 | ADCS ESC8                           | Hard       | NTLM relay to ADCS                |
+| 33 | Golden Ticket                       | Expert     | After krbtgt dump                 |
+| 34 | Child-to-Parent (ExtraSids)         | Expert     | dev -> corp.local EA              |
+| 35 | Trust Ticket                        | Expert     | Inter-realm TGT forgery           |
+| 36 | SID History Abuse                   | Expert     | dev.backdoor -> EA rights         |
 
 ---
 
@@ -232,14 +242,15 @@ ad-lab/
 │   ├── VM-EXPORT.md           # How to export/import VMs
 │   └── NETWORK-SETUP.md       # Network configuration guide
 ├── scripts/
-│   ├── Setup-CorpLocal.ps1    # corp.local full setup
-│   ├── Setup-DevCorpLocal.ps1 # dev.corp.local setup
-│   ├── Reset-AllPasswords.ps1 # Reset all lab passwords
-│   ├── lab-start.sh           # Start all VMs
-│   ├── lab-stop.sh            # Stop all VMs
-│   ├── lab-reset.sh           # Reset snapshots
-│   ├── lab-status.sh          # Check VM status
-│   └── verify-lab.ps1         # Verify AD services
+│   ├── Setup-CorpLocal.ps1       # corp.local full setup
+│   ├── Setup-DevCorpLocal.ps1    # dev.corp.local setup
+│   ├── Setup-ExtraAttacks.ps1    # Extra attack surfaces (optional)
+│   ├── Reset-AllPasswords.ps1    # Reset all lab passwords
+│   ├── lab-start.sh              # Start all VMs
+│   ├── lab-stop.sh               # Stop all VMs
+│   ├── lab-reset.sh              # Reset snapshots
+│   ├── lab-status.sh             # Check VM status
+│   └── verify-lab.ps1            # Verify AD services
 ├── setup/
 │   ├── promote-dc01.ps1       # Promote DC-01 to forest root
 │   ├── promote-dc02.ps1       # Promote DC-02 to child domain
@@ -252,7 +263,13 @@ ad-lab/
 │   ├── 05-acl-attacks.md
 │   ├── 06-adcs.md
 │   ├── 07-persistence.md
-│   └── 08-cross-domain.md
+│   ├── 08-cross-domain.md
+│   ├── 09-silver-ticket.md
+│   ├── 10-pass-the-hash.md
+│   ├── 11-skeleton-key.md
+│   ├── 12-coercion.md
+│   ├── 13-dns-admins.md
+│   └── 14-backup-operators.md
 ├── enumeration/
 │   ├── bloodhound-queries.md
 │   ├── powerview-cheatsheet.md
