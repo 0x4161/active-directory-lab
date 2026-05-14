@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
 
     m.vm.provider "virtualbox" do |vb|
       vb.name   = "AD-Lab-DC01"
-      vb.memory = 4096
+      vb.memory = 2048
       vb.cpus   = 2
       vb.gui    = false
       vb.customize ["modifyvm", :id, "--groups", "/AD-Lab"]
@@ -69,7 +69,7 @@ Vagrant.configure("2") do |config|
 
     m.vm.provider "virtualbox" do |vb|
       vb.name   = "AD-Lab-DC02"
-      vb.memory = 4096
+      vb.memory = 2048
       vb.cpus   = 2
       vb.gui    = false
       vb.customize ["modifyvm", :id, "--groups", "/AD-Lab"]
@@ -97,7 +97,7 @@ Vagrant.configure("2") do |config|
 
     m.vm.provider "virtualbox" do |vb|
       vb.name   = "AD-Lab-Attacker"
-      vb.memory = 4096
+      vb.memory = 2048
       vb.cpus   = 2
       vb.gui    = true
       vb.customize ["modifyvm", :id, "--groups", "/AD-Lab"]
