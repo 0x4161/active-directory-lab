@@ -3,7 +3,7 @@
 
 DC01="AD-Lab-DC01"
 DC02="AD-Lab-DC02"
-WS01="AD-Lab-WS01"
+WS01="AD-Lab-Attacker"
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'

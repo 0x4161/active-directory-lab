@@ -5,7 +5,7 @@
 Exporting your configured lab as OVA files lets you:
 - Share the lab without others needing to run setup scripts
 - Create a clean baseline snapshot before attacking
-- Host pre-built VMs on GitHub Releases
+- Share your custom-configured lab with others
 
 ---
 
@@ -45,7 +45,7 @@ C:\Windows\System32\Sysprep\sysprep.exe /oobe /generalize /shutdown
 2. **File > Export Appliance**
 3. Select the VM
 4. Format: **OVF 2.0**
-5. File: `DC-01.ova`
+5. File: `DC01.ova`
 6. Click **Export**
 
 ### Via CLI (Recommended for automation)

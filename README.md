@@ -28,11 +28,13 @@ This lab simulates a realistic enterprise Active Directory environment with inte
 misconfigurations covering a wide range of AD attack techniques — from basic enumeration
 to advanced persistence and cross-domain escalation.
 
-**One-command setup. Import VM. Start hacking.**
+**One command. Full lab. Start hacking.**
 
 ```bash
-# After importing the OVA files:
-./scripts/lab-start.sh
+git clone https://github.com/0x4161/active-directory-lab.git
+cd active-directory-lab
+vagrant plugin install vagrant-reload
+vagrant up
 ```
 
 ---
@@ -190,12 +192,12 @@ Adapter 2 (NAT):
 
 ## Supported Hypervisors
 
-| Hypervisor      | Status    | Format     | Notes                        |
-|-----------------|-----------|------------|------------------------------|
-| VirtualBox 7.x  | Tested    | OVA / OVF  | Recommended                  |
-| VMware Workstation 17 | Compatible | OVF   | Minor network reconfiguration|
-| VMware ESXi     | Compatible | OVF        | Enterprise use               |
-| Hyper-V         | Partial   | VHDX       | Manual conversion needed     |
+| Hypervisor            | Vagrant Support | Manual Build | Notes                          |
+|-----------------------|-----------------|--------------|--------------------------------|
+| VirtualBox 7.x        | ✅ Tested       | ✅ Tested    | Recommended                    |
+| VMware Workstation 17 | ⚠️ Partial      | ✅ Compatible| vagrant-vmware-desktop plugin  |
+| VMware ESXi           | ❌              | ✅ Compatible| Manual setup only              |
+| Hyper-V               | ❌              | ⚠️ Partial  | Manual setup, limited support  |
 
 ---
 

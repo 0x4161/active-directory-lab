@@ -5,7 +5,7 @@ set -euo pipefail
 
 DC01="AD-Lab-DC01"
 DC02="AD-Lab-DC02"
-WS01="AD-Lab-WS01"
+WS01="AD-Lab-Attacker"
 SNAPSHOT="Clean-Baseline"
 
 GREEN='\033[0;32m'
