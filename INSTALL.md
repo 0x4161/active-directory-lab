@@ -18,17 +18,42 @@
 
 ## Option A — Import Pre-built VMs (Fastest)
 
-### Step 1: Download OVA Files
+### Step 1: Download Split Parts from GitHub Releases
 
-Download from GitHub Releases:
+Go to [Releases](https://github.com/0x4161/active-directory-lab/releases) and download all parts:
 
 ```
-DC-01.ova   (~10 GB)   Forest Root DC + CA
-DC-02.ova   (~8 GB)    Child Domain DC
-WS-01.ova   (~8 GB)    Attacker Workstation
+DC01.ova.part00 ~ part03      (~6.7 GB total)   Forest Root DC + CA
+DC02.ova.part00 ~ part03      (~6.3 GB total)   Child Domain DC
+attacker.ova.part00 ~ part04  (~8.8 GB total)   Attacker Workstation
 ```
 
-### Step 2: Create Host-Only Network
+### Step 2: Reassemble OVA Files
+
+**Windows (PowerShell):**
+```powershell
+# Run in the folder where you downloaded the parts
+$files = @("DC01","DC02","attacker")
+foreach ($f in $files) {
+    $parts = Get-ChildItem "$f.ova.part*" | Sort-Object Name
+    $out = [System.IO.File]::OpenWrite("$f.ova")
+    foreach ($p in $parts) {
+        $bytes = [System.IO.File]::ReadAllBytes($p.FullName)
+        $out.Write($bytes, 0, $bytes.Length)
+    }
+    $out.Close()
+    Write-Host "[+] $f.ova ready"
+}
+```
+
+**macOS / Linux:**
+```bash
+cat DC01.ova.part* > DC01.ova
+cat DC02.ova.part* > DC02.ova
+cat attacker.ova.part* > attacker.ova
+```
+
+### Step 3: Create Host-Only Network
 
 Open VirtualBox > File > Host Network Manager > Create
 
@@ -39,29 +64,29 @@ Mask    : 255.255.255.0
 DHCP    : Disabled
 ```
 
-### Step 3: Import VMs
+### Step 4: Import VMs
 
 ```bash
-VBoxManage import DC-01.ova --vsys 0 --vmname "AD-Lab-DC01"
-VBoxManage import DC-02.ova --vsys 0 --vmname "AD-Lab-DC02"
-VBoxManage import WS-01.ova --vsys 0 --vmname "AD-Lab-WS01"
+VBoxManage import DC01.ova --vsys 0 --vmname "AD-Lab-DC01"
+VBoxManage import DC02.ova --vsys 0 --vmname "AD-Lab-DC02"
+VBoxManage import attacker.ova --vsys 0 --vmname "AD-Lab-Attacker"
 ```
 
 Or via GUI: File > Import Appliance > select each OVA.
 
-### Step 4: Start the Lab
+### Step 5: Start the Lab
 
 ```bash
 ./scripts/lab-start.sh
 ```
 
-### Step 5: Verify
+### Step 6: Verify
 
 ```bash
 ./scripts/lab-status.sh
 ```
 
-Log into WS-01 as `corp\attacker.01` / `p@ssw0rd` and begin.
+Log in as `corp\attacker.01` / `p@ssw0rd` and begin.
 
 ---
 

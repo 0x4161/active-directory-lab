@@ -81,19 +81,43 @@ to advanced persistence and cross-domain escalation.
 
 ### Option A — Import Pre-built VMs (Recommended)
 
+> Download split parts from [GitHub Releases](https://github.com/0x4161/active-directory-lab/releases), reassemble, then import.
+
+**Windows (PowerShell):**
+```powershell
+# Reassemble OVA files from split parts
+$files = @("DC01","DC02","attacker")
+foreach ($f in $files) {
+    $parts = Get-ChildItem "$f.ova.part*" | Sort-Object Name
+    $out = [System.IO.File]::OpenWrite("$f.ova")
+    foreach ($p in $parts) { $bytes = [System.IO.File]::ReadAllBytes($p); $out.Write($bytes,0,$bytes.Length) }
+    $out.Close(); Write-Host "[+] $f.ova reassembled"
+}
+
+# Import into VirtualBox
+VBoxManage import DC01.ova --vsys 0 --vmname "AD-Lab-DC01"
+VBoxManage import DC02.ova --vsys 0 --vmname "AD-Lab-DC02"
+VBoxManage import attacker.ova --vsys 0 --vmname "AD-Lab-Attacker"
+```
+
+**macOS / Linux:**
 ```bash
-# 1. Download OVA files from GitHub Releases
-#    See: https://github.com/YOUR_USERNAME/ad-lab/releases
+# Reassemble
+cat DC01.ova.part* > DC01.ova
+cat DC02.ova.part* > DC02.ova
+cat attacker.ova.part* > attacker.ova
 
-# 2. Import all VMs
-VBoxManage import DC-01.ova --vsys 0 --vmname "AD-Lab-DC01"
-VBoxManage import DC-02.ova --vsys 0 --vmname "AD-Lab-DC02"
-VBoxManage import WS-01.ova --vsys 0 --vmname "AD-Lab-WS01"
+# Import
+VBoxManage import DC01.ova --vsys 0 --vmname "AD-Lab-DC01"
+VBoxManage import DC02.ova --vsys 0 --vmname "AD-Lab-DC02"
+VBoxManage import attacker.ova --vsys 0 --vmname "AD-Lab-Attacker"
+```
 
-# 3. Start the lab
+```bash
+# Start the lab
 ./scripts/lab-start.sh
 
-# 4. Verify everything is working
+# Verify everything is working
 ./scripts/lab-status.sh
 ```
 
@@ -101,8 +125,8 @@ VBoxManage import WS-01.ova --vsys 0 --vmname "AD-Lab-WS01"
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/ad-lab.git
-cd ad-lab
+git clone https://github.com/0x4161/active-directory-lab.git
+cd active-directory-lab
 
 # 2. Read the setup guide
 cat docs/LAB-SETUP.md
