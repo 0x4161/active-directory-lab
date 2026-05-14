@@ -139,6 +139,41 @@ cd active-directory-lab
 
 ---
 
+## Extra Attack Surfaces (Optional)
+
+After the base lab is running, you can add **14 additional attack surfaces** with one script:
+
+```powershell
+# On DC-01 — run after Setup-CorpLocal.ps1 completes
+cd C:\vagrant\scripts   # or wherever you copied the repo
+.\Setup-ExtraAttacks.ps1
+```
+
+> Safe to run on top of the existing lab — idempotent, nothing is removed or broken.
+
+**What it enables:**
+
+| # | Misconfiguration | Attack Technique |
+|---|-----------------|-----------------|
+| 1 | WDigest enabled | `sekurlsa::wdigest` → cleartext passwords in LSASS |
+| 2 | NTLMv1 allowed | Downgrade NTLM → easier to crack / relay |
+| 3 | RunAsPPL = 0 | Skeleton Key (`misc::skeleton`) — any password works |
+| 4 | UAC token filter disabled | Pass-the-Hash via SMB/WinRM to local admins |
+| 5 | Print Spooler running | PrinterBug (MS-RPRN) coercion → relay/capture DC hash |
+| 6 | WebClient service running | WebDAV coercion → NTLM relay over HTTP |
+| 7 | khalid.nasser → DnsAdmins | DLL injection via DNS service (runs as SYSTEM) |
+| 8 | dana.rashid → Backup Operators | Copy NTDS.dit → dump all domain hashes offline |
+| 9 | nasser.web → Account Operators | Create/modify users in most OUs |
+| 10 | noura.ahmed → DCSync rights | Second independent DCSync path |
+| 11 | maryam.hassan → WriteSPN on reem.sultan | Targeted Kerberoasting via WriteSPN ACE |
+| 12 | hessa.jaber → AS-REP roastable | Extra AS-REP roasting target |
+| 13 | Remote Registry enabled | Read SAM/SYSTEM hive remotely |
+| 14 | Windows Firewall disabled | Unrestricted lateral movement |
+
+**Attack guides for each technique:** [`attacks/09`](attacks/09-silver-ticket.md) · [`10`](attacks/10-pass-the-hash.md) · [`11`](attacks/11-skeleton-key.md) · [`12`](attacks/12-coercion.md) · [`13`](attacks/13-dns-admins.md) · [`14`](attacks/14-backup-operators.md)
+
+---
+
 ## Attack Scenarios Included
 
 | #  | Attack                              | Difficulty | Path                              |
